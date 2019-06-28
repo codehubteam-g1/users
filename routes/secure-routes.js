@@ -1,8 +1,8 @@
 const express = require('express');
-const users = require('../lib/users')
+const usersLib = require('../lib/users')
 
 
-module.exports = function (db) {
+module.exports = function (database) {
   const router = express.Router();
 
   //Lets say the route below is very sensitive and we want only authorized users to have access
@@ -23,24 +23,31 @@ module.exports = function (db) {
     })
   });
 
-  // router.post('/updateName', passport.authenticate('updateName', async (req, res, next) => {
-  //   res.json({
-  //     name : req.name
-  //   })
-  // }));
-
   router.post('/updateName', async (req, res, next) => {
-    try {
-      const Users = await users();
-      let answer = await Users.updateName(req, next);
-      console.log(answer);
-      res.json({
-        finished: true
-      })
-    } catch (error) {
-      console.log('lanzando error')
-      next(error);
-    }
+    const db = await database;
+    let users = await usersLib(db);
+    await users.updateName(req, next);
+    res.json({
+      finished: true
+    });
+  });
+
+  router.post('/updatePhone', async (req, res, next) => {
+    const db = await database;
+    let users = await usersLib(db);
+    await users.updatePhone(req, next);
+    res.json({
+      finished: true
+    });
+  });
+
+  router.post('/updateProfilePicture', async (req, res, next) => {
+    const db = await database;
+    let users = await usersLib(db);
+    await users.updateProfilePicture(req, next);
+    res.json({
+      finished: true
+    });
   });
 
   return router;

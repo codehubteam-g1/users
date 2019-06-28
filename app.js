@@ -2,6 +2,12 @@ const express = require('express');
 const passport = require('passport');
 const app = express();
 const port = 3001;
+require('./auth/auth');
+
+const db = require('./lib/db')();
+
+const routes = require('./routes/routes');
+const secureRoutes = require('./routes/secure-routes')(db);
 
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -15,16 +21,9 @@ app.use(function(req, res, next) {
     next();
   }
 });
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-
-require('./auth/auth');
-
 app.use( express.urlencoded({ extended: false }) );
-
-const routes = require('./routes/routes');
-const secureRoutes = require('./routes/secure-routes')('db');
 
 app.use('/', routes);
 //We plugin our jwt strategy as a middleware so only verified users can access this route

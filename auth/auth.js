@@ -1,6 +1,6 @@
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
-const usersService = require('../usersService');
+const usersService = require('../lib/db');
 
 //Create a passport middleware to handle user registration
 passport.use('signup', new localStrategy({
@@ -14,7 +14,7 @@ passport.use('signup', new localStrategy({
     console.log('Enviando a db');
     // console.log(req);
     console.log(req.body);
-    const user = await uService.Users.createUser(req.body);
+    const user = await uService.Users.createUser(req.body); 
     console.log('recibido de db');
     console.log(user);
     //Send the user information to the next middleware
