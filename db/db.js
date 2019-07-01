@@ -1,4 +1,6 @@
-const usersIndex = require('../../users/index');
+const index = require('../../users/index');
+const users = require('./lib/users');
+const addresses = require('./lib/addresses');
 
 const config = {
     database: process.env.DB_NAME || 'rappiclone_users',
@@ -11,5 +13,11 @@ const config = {
 }   
 
 module.exports = async function() {
-    return await usersIndex(config)
+    let db = await index(config);
+    let Users = await users(db);
+    const Addresses = await addresses(db);
+    return {
+        Users,
+        Addresses
+    }
 }

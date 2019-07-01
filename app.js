@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3001;
-const db = require('./lib/db')();
+const db = require('./db/db')();
 const passport = require('./auth/auth')(db);
 app.use(passport.initialize());
 const routes = require('./routes/routes');

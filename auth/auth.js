@@ -3,9 +3,8 @@ const localStrategy = require('passport-local').Strategy;
 const JWTstrategy = require('passport-jwt').Strategy;
 //We use this to extract the JWT sent by the user
 const ExtractJWT = require('passport-jwt').ExtractJwt;
-const usersLib = require('../lib/users')
 
-module.exports = db => {
+module.exports = database => {
   //Create a passport middleware to handle user registration
   passport.use('signup', new localStrategy({
     usernameField: 'email',
@@ -14,11 +13,9 @@ module.exports = db => {
   }, async (req, email, password, done) => {
     try {
       //Save the information provided by the user to the the database
-      console.log('Enviando a db');
-      let users = await usersLib(db);
-      let user = await users.createUser(req, done);
-      console.log('recibido de db');
-      console.log(user);
+      let db = await database;
+      let users = await db.Users;
+      let user = await users.createUser(req.body);
       //Send the user information to the next middleware
       return done(null, user);
     } catch (error) {
@@ -29,11 +26,11 @@ module.exports = db => {
   //Create a passport middleware to handle User login
   passport.use('login', new localStrategy({
     usernameField: 'email',
-    passwordField: 'password',
-    passReqToCallback: true
-  }, async (req, email, password, done) => {
+    passwordField: 'password'
+  }, async (email, password, done) => {
     try {
-      let users = await usersLib(db);
+      let db = await database;
+      let users = await db.Users;
       //Find the user associated with the email provided by the user
       let user = await users.findByEmail(email);
       validate = await users.authenticateUser(email, password);

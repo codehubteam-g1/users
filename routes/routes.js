@@ -14,18 +14,13 @@ router.post('/signup', passport.authenticate('signup', { session: false }), asyn
 
 router.post('/login', passport.authenticate('login', { session: false }), async (req, res, next) => {
   let user = req.user
-
   req.login(req, { session: false }, async (error) => {
-    console.log('Contiúa ejecutando');
     if (error) return next(error)
-    console.log('Contiúa ejecutando 2');
     //We don't want to store the sensitive information such as the
     //user password in the token so we pick only the id
     const body = { id: user.id };
-
     //Sign the JWT token and populate the payload with the user email and id
     const token = jwt.sign({ user: body }, 'a8729721a1e3e23cb890767e9a56b958', { expiresIn: "14 days" });
-
     //Send back the token to the user
     return res.json({ token });
   });
