@@ -2,10 +2,8 @@ const express = require('express');
 const usersLib = require('../lib/users')
 
 
-module.exports = function (database) {
+module.exports = db => {
   const router = express.Router();
-
-  //Lets say the route below is very sensitive and we want only authorized users to have access
 
   //Displays information tailored according to the logged in user
   router.get('/home', (req, res, next) => {
@@ -24,30 +22,39 @@ module.exports = function (database) {
   });
 
   router.post('/updateName', async (req, res, next) => {
-    const db = await database;
-    let users = await usersLib(db);
-    await users.updateName(req, next);
-    res.json({
-      finished: true
-    });
+    try {
+      let users = await usersLib(db);
+      await users.updateName(req.body.id, req.body.name);
+      res.json({
+        success: true
+      });
+    } catch (error) {
+      return next(error);
+    }
   });
 
   router.post('/updatePhone', async (req, res, next) => {
-    const db = await database;
-    let users = await usersLib(db);
-    await users.updatePhone(req, next);
-    res.json({
-      finished: true
-    });
+    try {
+      let users = await usersLib(db);
+      await users.updatePhone(req.body.id, req.body.phone);
+      res.json({
+        success: true
+      });
+    } catch (error) {
+      return next(error);
+    }
   });
 
   router.post('/updateProfilePicture', async (req, res, next) => {
-    const db = await database;
-    let users = await usersLib(db);
-    await users.updateProfilePicture(req, next);
-    res.json({
-      finished: true
-    });
+    try {
+      let users = await usersLib(db);
+      await users.updateProfilePicture(req.body.id, req.body.profilePictureUrl);
+      res.json({
+        success: true
+      });
+    } catch (error) {
+      return next(error);
+    }
   });
 
   return router;
