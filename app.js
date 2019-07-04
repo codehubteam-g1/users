@@ -1,11 +1,12 @@
-const express = require('express');
-const app = express();
-const port = 3001;
-const db = require('./db/db')();
-const passport = require('./auth/auth')(db);
-app.use(passport.initialize());
+'use strict'
+
+const Express = require('express');
+const app = Express();
+const PORT = 3002;
+const database = require('./db/database')();
+const passport = require('./auth/auth')(database);
 const routes = require('./routes/routes');
-const secureRoutes = require('./routes/secure-routes')(db);
+const secureRoutes = require('./routes/secure-routes')(database);
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -20,20 +21,26 @@ app.use(function (req, res, next) {
   }
 });
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
+app.use(Express.json());
+app.use(Express.urlencoded({ extended: false }));
+
+app.use(passport.initialize());
 
 app.use('/', routes);
 //We plugin our jwt strategy as a middleware so only verified users can access this route
-app.use('/me', passport.authenticate('jwt', { session: false }), secureRoutes);
+app.use('/user', passport.authenticate('jwt', { session: false }), secureRoutes);
 
 //Handle errors
 app.use(function (err, req, res, next) {
-  console.log(err);
   res.status(err.status || 500);
-  res.json({ errorMessage: err.error.message });
+  if (err.error) res.json({ errorMessage: err.error.message });
+  else {
+    res.json({ errorMessage: 'Ocurrió un error en el servidor. Inténtalo de nuevo en un momento' });
+    if (err.errors && err.errors[0]) console.log(err.errors[0].message)
+    else console.log(err)
+  }
 });
 
-app.listen(port, () => {
-  console.log('Server started')
+app.listen(PORT, () => {
+  console.log(`Server started at port: ${PORT}`)
 });

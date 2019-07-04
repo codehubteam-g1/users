@@ -1,86 +1,89 @@
-const express = require('express');
+'use strict'
+
+const Express = require('express');
+const ErrorHandler = require('../db/lib/errorHandler')
 
 module.exports = database => {
-  const router = express.Router();
+  const router = Express.Router();
 
   router.get('/', async (req, res, next) => {
     //We'll just send back the user id
     try {
-      let db = await database;
-      let Users = await db.Users;
-      let user = await Users.findById(req.user.id)
+      const db = await database;
+      let user = await db.User.findById(req.user.id)
       res.json({
         user
       })
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
   });
 
   router.post('/updateName', async (req, res, next) => {
     try {
-      let db = await database;
-      let Users = await db.Users;
-      await Users.updateName(req.user.id, req.body.name);
+      let name = req.body.name || ''
+      const db = await database;
+      let user = await db.User.findById(req.user.id)
+      await user.update({ name })
       res.json({
         success: true
       });
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
   });
 
   router.post('/updatePhone', async (req, res, next) => {
     try {
-      let db = await database;
-      let Users = await db.Users;
-      await Users.updatePhone(req.user.id, req.body.phone);
+      let phone = req.body.phone || ''
+      const db = await database;
+      let user = await db.User.findById(req.user.id)
+      await user.update({ phone })
       res.json({
         success: true
       });
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
   });
 
   router.post('/updateProfilePicture', async (req, res, next) => {
     try {
-      let db = await database;
-      let Users = await db.Users;
-      await Users.updateProfilePicture(req.user.id, req.body.profilePictureUrl);
+      let profilePictureUrl = req.body.profilePictureUrl || ''
+      const db = await database;
+      let user = await db.User.findById(req.user.id)
+      await user.update({ profilePictureUrl })
       res.json({
         success: true
       });
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
   });
 
   router.post('/createAddress', async (req, res, next) => {
     try {
-      req.body.userId = req.user.id;
-      let db = await database;
-      let Addresses = await db.Addresses;
-      await Addresses.createAddress(req.body);
+      const db = await database;
+      let user = await db.User.findById(req.user.id)
+      await user.addAddress(req.body)
       res.json({
         success: true
       });
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
   });
 
   router.get('/addressesByUserId', async (req, res, next) => {
-    //We'll just send back the user details and the token
     try {
-      let db = await database;
-      let Addresses = await db.Addresses;
-      let addresses = await Addresses.findByUserId(req.user.id)
+      const db = await database;
+      let user = await db.User.findById(req.user.id)
+      let addresses = await user.getAddresses()
       res.json({
         addresses
-      })
+      });
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
   });
 
@@ -88,8 +91,8 @@ module.exports = database => {
     //We'll just send back the user details and the token
     try {
       let db = await database;
-      let Addresses = await db.Addresses;
-      let address = await Addresses.findByAddressId(req.body.addressId)
+      let Address = await db.Address
+      let address = await Address.findById(req.body.id)
       res.json({
         address
       })
@@ -100,42 +103,45 @@ module.exports = database => {
 
   router.post('/updateAddress', async (req, res, next) => {
     try {
-      let db = await database;
-      let Addresses = await db.Addresses;
-      await Addresses.updateAddress(req.user.id, req.body.addressId, req.body.address);
+      let addressDir = req.body.address || ''
+      const db = await database;
+      let address = await db.Address.findById(req.body.id)
+      await address.update({ address: addressDir })
       res.json({
         success: true
       });
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
   });
 
   router.post('/updateTag', async (req, res, next) => {
     try {
-      let db = await database;
-      let Addresses = await db.Addresses;
-      await Addresses.updateTag(req.user.id, req.body.addressId, req.body.tag);
+      let tag = req.body.tag || ''
+      const db = await database;
+      let address = await db.Address.findById(req.body.id)
+      await address.update({ tag })
       res.json({
         success: true
       });
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
-  });
+  })
 
   router.post('/deleteAddress', async (req, res, next) => {
     try {
       let db = await database;
-      let Addresses = await db.Addresses;
-      await Addresses.deleteAddress(req.user.id, req.body.addressId);
+      let Address = await db.Address
+      let address = await Address.findById(req.body.id)
+      await address.deleteAddress()
       res.json({
         success: true
-      });
+      })
     } catch (error) {
       return next(error);
     }
-  });
+  })
 
   return router;
 }

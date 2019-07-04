@@ -1,8 +1,12 @@
+'use strict'
+
 const passport = require('passport');
 const localStrategy = require('passport-local').Strategy;
 const JWTstrategy = require('passport-jwt').Strategy;
 //We use this to extract the JWT sent by the user
 const ExtractJWT = require('passport-jwt').ExtractJwt;
+
+const ErrorHandler = require('../db/lib/errorHandler')
 
 module.exports = database => {
   //Create a passport middleware to handle user registration
@@ -13,13 +17,12 @@ module.exports = database => {
   }, async (req, email, password, done) => {
     try {
       //Save the information provided by the user to the the database
-      let db = await database;
-      let users = await db.Users;
-      let user = await users.createUser(req.body);
+      const db = await database;
+      let user = await db.User.createUser(req.body);
       //Send the user information to the next middleware
       return done(null, user);
     } catch (error) {
-      return done(error);
+      ErrorHandler(error, done)
     }
   }));
 
@@ -29,15 +32,12 @@ module.exports = database => {
     passwordField: 'password'
   }, async (email, password, done) => {
     try {
-      let db = await database;
-      let users = await db.Users;
-      //Find the user associated with the email provided by the user
-      let user = await users.findByEmail(email);
-      validate = await users.authenticateUser(email, password);
-      //Send the user information to the next middleware
+      const db = await database;
+      let user = await db.User.findByEmail(email)
+      await user.authenticate(password);
       return done(null, user);
     } catch (error) {
-      return done(error);
+      ErrorHandler(error, done)
     }
   }));
 
