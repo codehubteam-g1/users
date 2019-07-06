@@ -8,10 +8,10 @@ const SetupAdministratorStoreBridge = require('./models/administratorStoreBridge
 const config = {
     database: process.env.DB_NAME || 'users',
     username: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASS || '123456789',
-    host: process.env.DB_HOST || 'localhost',
+    password: process.env.DB_PASS || 'password',
+    host: process.env.DB_HOST || 'users-docker_postgresql_1',
     dialect: 'postgres',
-    setup: false,
+    setup: true,
     logging: false,
     define: {
         underscored: true,

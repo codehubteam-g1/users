@@ -13,7 +13,7 @@ router.post('/signup', Passport.authenticate('signup', { session: false }), asyn
   });
 });
 
-router.get('/login', Passport.authenticate('login', { session: false }), async (req, res, next) => {
+router.post('/login', Passport.authenticate('login', { session: false }), async (req, res, next) => {
   let user = req.user
   req.login(req, { session: false }, async (error) => {
     if (error) return next(error)

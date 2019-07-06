@@ -32,9 +32,12 @@ module.exports = database => {
     passwordField: 'password'
   }, async (email, password, done) => {
     try {
+      console.log('entró a login')
       const db = await database;
       let user = await db.User.findByEmail(email)
+      console.log('llegó usuario')
       await user.authenticate(password);
+      console.log('autenticó')
       return done(null, user);
     } catch (error) {
       ErrorHandler(error, done)

@@ -53,6 +53,7 @@ module.exports = database => {
       const db = await database;
       let user = await db.User.findById(req.user.id)
       await user.update({ profilePictureUrl })
+      
       res.json({
         success: true
       });
