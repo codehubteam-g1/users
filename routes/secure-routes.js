@@ -53,7 +53,7 @@ module.exports = database => {
       const db = await database;
       let user = await db.User.findById(req.user.id)
       await user.update({ profilePictureUrl })
-      
+
       res.json({
         success: true
       });
@@ -66,7 +66,8 @@ module.exports = database => {
     try {
       const db = await database;
       let user = await db.User.findById(req.user.id)
-      await user.addAddress(req.body)
+      let answer = await user.addAddress(req.body)
+      console.log(answer)
       res.json({
         success: true
       });
@@ -136,6 +137,20 @@ module.exports = database => {
       let Address = await db.Address
       let address = await Address.findById(req.body.id)
       await address.deleteAddress()
+      res.json({
+        success: true
+      })
+    } catch (error) {
+      return next(error);
+    }
+  })
+
+  router.post('/selectAddress', async (req, res, next) => {
+    try {
+      let db = await database;
+      let user = await db.User.findById(req.user.id)
+      await user.unselectAddresses()
+      await db.Address.update({ selected: true }, { where: { id: req.body.id } })
       res.json({
         success: true
       })

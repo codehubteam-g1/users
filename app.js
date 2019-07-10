@@ -8,6 +8,10 @@ const passport = require('./auth/auth')(database);
 const routes = require('./routes/routes');
 const secureRoutes = require('./routes/secure-routes')(database);
 
+const Proxy = require('http-proxy-middleware')
+
+const shopsProxy = Proxy({ target: 'http://localhost:3000/api', changeOrigin: true })
+
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Access-Control-Request-Headers, Access-Control-Request-Method, Origin, X-Requested-With, Content-Type, Accept, DNT, Referer, User-Agent, Authorization");
@@ -25,6 +29,8 @@ app.use(Express.json());
 app.use(Express.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
+
+app.use('/api', shopsProxy);
 
 app.use('/', routes);
 //We plugin our jwt strategy as a middleware so only verified users can access this route

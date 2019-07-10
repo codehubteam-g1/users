@@ -33,15 +33,28 @@ module.exports = sequelize => {
     }
 
     addressModel.prototype.deleteAddress = function () {
+        let scope = this;
         if (this.selected) {
-            this.getUser().then(user => {
-                user.getAddresses().then(addresses => {
-                    if (addresses.length > 0) addresses[addresses.length - 1].update({ selected: true })
-                })
+
+            return this.getUser().then(user => {
+                return user.getAddresses().then(addresses => {
+                    for (let i = 0; i < addresses.length; i++) {
+                        if (addresses[i].id != scope.id) {
+                            console.log(addresses[i].id)
+                            console.log(scope.id)
+                            return addresses[i].update({ selected: true }).then(r => {
+                                console.log('destoyed')
+                                return scope.destroy()
+                            })
+                        }
+                    }
+                    if (addresses.length === 1) return scope.destroy()
+
+                });
             })
         }
-
-        return this.destroy()
+        else
+            return this.destroy();
     }
 
     return addressModel

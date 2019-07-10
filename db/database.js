@@ -9,9 +9,9 @@ const config = {
     database: process.env.DB_NAME || 'users',
     username: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASS || 'password',
-    host: process.env.DB_HOST || 'users-docker_postgresql_1',
+    host: process.env.DB_HOST || 'usersdocker_postgresql_1',
     dialect: 'postgres',
-    setup: true,
+    setup: false,
     logging: false,
     define: {
         underscored: true,

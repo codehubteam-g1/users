@@ -95,8 +95,19 @@ module.exports = sequelize => {
                     if (currAddress.id != response.id) currAddress.update({ selected: false })
                 })
                 return response
-            })
+            }).catch(error => error)
         })
+    }
+
+    userModel.prototype.unselectAddresses = function (id) {
+        let scope = this
+        return this.getAddresses().then(addresses => {
+            addresses.forEach(function (currAddress) {
+                currAddress.update({ selected: false })
+                console.log('funcionó')
+                return true;
+            })
+        }).catch(error => error)
     }
 
     return userModel
