@@ -6,12 +6,12 @@ const SetupAddressModel = require('./models/address')
 const SetupAdministratorStoreBridge = require('./models/administratorStoreBridge')
 
 const config = {
-    database: process.env.DB_NAME || 'users',
-    username: process.env.DB_USER || 'postgres',
-    password: process.env.DB_PASS || 'password',
-    host: process.env.DB_HOST || 'usersdocker_postgresql_1',
+    database: process.env.DB_NAME || '',
+    username: process.env.DB_USER || '',
+    password: process.env.DB_PASS || '',
+    host: process.env.DB_HOST || '',
     dialect: 'postgres',
-    setup: false,
+    setup: true,
     logging: false,
     define: {
         underscored: true,
@@ -21,6 +21,7 @@ const config = {
 }
 
 module.exports = async function () {
+
     const sequelize = new Sequelize(config)
 
     await sequelize.authenticate()

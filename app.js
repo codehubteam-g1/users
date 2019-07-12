@@ -10,7 +10,7 @@ const secureRoutes = require('./routes/secure-routes')(database);
 
 const Proxy = require('http-proxy-middleware')
 
-const shopsProxy = Proxy({ target: 'http://localhost:3000/api', changeOrigin: true })
+const shopsProxy = Proxy({ target: 'shops', changeOrigin: true })
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
