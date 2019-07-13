@@ -65,7 +65,7 @@ module.exports = sequelize => {
     }
 
     userModel.findById = function (id) {
-        return this.findOne({ where: { id } }).then(user => {
+        return this.findByPk(id).then(user => {
             if (!user) throw ({ error: new Error('No existe un usuario asociado a este id'), status: 401 })
             return user
         })

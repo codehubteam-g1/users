@@ -30,6 +30,15 @@ app.use(Express.urlencoded({ extended: false }));
 
 app.use(passport.initialize());
 
+// app.get('/api', async (req, res, next) => {
+//   try {
+//     res.json({
+//       success: 'funciona'
+//     });
+//   } catch (error) {
+//     ErrorHandler(error, next)
+//   }
+// });
 app.use('/api', shopsProxy);
 
 app.use('/', routes);
@@ -38,6 +47,7 @@ app.use('/user', passport.authenticate('jwt', { session: false }), secureRoutes)
 
 //Handle errors
 app.use(function (err, req, res, next) {
+  console.log('entró a users')
   res.status(err.status || 500);
   if (err.error) res.json({ errorMessage: err.error.message });
   else {

@@ -89,12 +89,13 @@ module.exports = database => {
     }
   });
 
-  router.get('/addressByAddressId', async (req, res, next) => {
+  router.get('/addressByAddressId/:id', async (req, res, next) => {
     //We'll just send back the user details and the token
     try {
+      let id = req.params.id
       let db = await database;
       let Address = await db.Address
-      let address = await Address.findById(req.body.id)
+      let address = await Address.findById(id)
       res.json({
         address
       })

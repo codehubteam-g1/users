@@ -3,7 +3,7 @@
 const Sequelize = require('sequelize')
 const SetupUserModel = require('./models/user')
 const SetupAddressModel = require('./models/address')
-const SetupAdministratorStoreBridge = require('./models/administratorStoreBridge')
+const SetupAdministratorStore = require('./models/administratorStore')
 
 const config = {
     database: process.env.DB_NAME || '',
@@ -34,18 +34,18 @@ module.exports = async function () {
 
     const User = SetupUserModel(sequelize)
     const Address = SetupAddressModel(sequelize)
-    const AdministratorStoreBridge = SetupAdministratorStoreBridge(sequelize)
+    const AdministratorStore = SetupAdministratorStore(sequelize)
 
-    User.hasMany(Address, {onDelete: 'CASCADE'})
+    User.hasMany(Address, { onDelete: 'CASCADE' })
     Address.belongsTo(User)
-    User.hasMany(AdministratorStoreBridge, {onDelete: 'CASCADE'})
-    AdministratorStoreBridge.belongsTo(User)
+    User.hasMany(AdministratorStore, { onDelete: 'CASCADE' })
+    AdministratorStore.belongsTo(User)
 
     if (config.setup) sequelize.sync({ force: true })
 
     return {
         User,
         Address,
-        AdministratorStoreBridge
+        AdministratorStore
     }
 }
