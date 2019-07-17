@@ -66,8 +66,7 @@ module.exports = database => {
     try {
       const db = await database;
       let user = await db.User.findById(req.user.id)
-      let answer = await user.addAddress(req.body)
-      console.log(answer)
+      await user.addAddress(req.body)
       res.json({
         success: true
       });

@@ -12,7 +12,7 @@ const config = {
     host: process.env.DB_HOST || '',
     dialect: 'postgres',
     setup: true,
-    logging: false,
+    logging: console.log,
     define: {
         underscored: true,
         freezeTableName: true,
@@ -41,7 +41,7 @@ module.exports = async function () {
     User.hasMany(AdministratorStore, { onDelete: 'CASCADE' })
     AdministratorStore.belongsTo(User)
 
-    if (config.setup) sequelize.sync({ force: true })
+    if (config.setup) sequelize.sync({ force: true, logging: console.log })
 
     return {
         User,

@@ -1,9 +1,7 @@
 #!/bin/bash
-if [-z "$production"]
+if [[ -z "$setup" ]]
 then
-	node server.js
+	echo "No está definido"
 else
-	rm -r node_modules
-	npm i
-	node server.js
+	echo "Sí está definido"
 fi

@@ -2,15 +2,13 @@
 
 const Express = require('express');
 const app = Express();
-const PORT = 3000;
+const PORT = 3001;
 const database = require('./db/database')();
 const passport = require('./auth/auth')(database);
-const routes = require('./routes/routes');
+const auth_routes = require('./routes/auth_routes');
 const secureRoutes = require('./routes/secure-routes')(database);
 
-const Proxy = require('http-proxy-middleware')
-
-const shopsProxy = Proxy({ target: 'shops', changeOrigin: true })
+const http = require('http')
 
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
@@ -25,25 +23,53 @@ app.use(function (req, res, next) {
   }
 });
 
-app.use(Express.json());
-app.use(Express.urlencoded({ extended: false }));
+function proxyToService(client_req, client_res, targetHost, targetPort) {
+  let options = {
+    hostname: targetHost,
+    port: targetPort,
+    path: client_req.url,
+    method: client_req.method,
+    headers: Object.assign(client_req.headers, client_req.user)
+  }
+
+  let proxy = http.request(options, res => {
+    client_res.writeHead(res.statusCode, res.headers)
+    res.pipe(client_res, {
+      end: true
+    })
+  })
+
+  client_req.pipe(proxy, {
+    end: true
+  })
+}
 
 app.use(passport.initialize());
 
-// app.get('/api', async (req, res, next) => {
-//   try {
-//     res.json({
-//       success: 'funciona'
-//     });
-//   } catch (error) {
-//     ErrorHandler(error, next)
-//   }
-// });
-app.use('/api', shopsProxy);
+app.use('/stores', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+  try { proxyToService(req, res, 'stores', 4001) }
+  catch (error) {
+    next(error)
+  }
+})
 
-app.use('/', routes);
+app.use('/orders', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+  try { proxyToService(req, res, 'orders', 5001) }
+  catch (error) {
+    next(error)
+  }
+})
+
+app.use('/shopingCarts', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+  proxyToService(req, res, 'shoppingCarts', 6001)
+})
+
+app.use(Express.json());
+app.use(Express.urlencoded({ extended: false }));
+
+app.use('/', auth_routes);
 //We plugin our jwt strategy as a middleware so only verified users can access this route
-app.use('/user', passport.authenticate('jwt', { session: false }), secureRoutes);
+app.use('/users', passport.authenticate('jwt', { session: false }), secureRoutes);
 
 //Handle errors
 app.use(function (err, req, res, next) {
