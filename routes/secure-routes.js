@@ -99,7 +99,7 @@ module.exports = database => {
         address
       })
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
   });
 
@@ -141,7 +141,7 @@ module.exports = database => {
         success: true
       })
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
   })
 
@@ -155,7 +155,7 @@ module.exports = database => {
         success: true
       })
     } catch (error) {
-      return next(error);
+      ErrorHandler(error, next)
     }
   })
 
