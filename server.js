@@ -5,7 +5,7 @@ const app = Express();
 const PORT = 3001;
 const database = require('./db/database')();
 const passport = require('./auth/auth')(database);
-const auth_routes = require('./routes/auth_routes');
+const auth-routes = require('./routes/auth-routes');
 const secureRoutes = require('./routes/secure-routes')(database);
 
 const http = require('http')
@@ -67,7 +67,7 @@ app.use('/shopingCarts', passport.authenticate('jwt', { session: false }), (req,
 app.use(Express.json());
 app.use(Express.urlencoded({ extended: false }));
 
-app.use('/', auth_routes);
+app.use('/', auth-routes);
 //We plugin our jwt strategy as a middleware so only verified users can access this route
 app.use('/users', passport.authenticate('jwt', { session: false }), secureRoutes);
 
