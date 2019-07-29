@@ -3,7 +3,7 @@
 const Sequelize = require('sequelize')
 const SetupUserModel = require('./models/user')
 const SetupAddressModel = require('./models/address')
-const SetupAdministratorStore = require('./models/administratorStore')
+const SetupAdministratorStore = require('./models/administrator-store')
 
 const config = {
     database: process.env.DB_NAME || '',
