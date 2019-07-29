@@ -60,8 +60,8 @@ app.use('/orders', passport.authenticate('jwt', { session: false }), (req, res, 
   }
 })
 
-app.use('/shopingCarts', passport.authenticate('jwt', { session: false }), (req, res, next) => {
-  proxyToService(req, res, 'shoppingCarts', 6001)
+app.use('/shoppingCarts', passport.authenticate('jwt', { session: false }), (req, res, next) => {
+  proxyToService(req, res, 'shopping-carts', 6001)
 })
 
 app.use(Express.json());
