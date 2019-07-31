@@ -1,7 +1,26 @@
 #!/bin/bash
-if [[ -z "$setup" ]]
-then
-	echo "No está definido"
-else
-	echo "Sí está definido"
+sleep 5s
+if [[ $STOPPED !=  "true" ]]; then
+	echo "NOT STOPPED ENV VARIABLE"
+	DIR="./node_modules"
+	if [[ -d $DIR ]]; then
+		echo "NODE MODULES EXIST"
+		if [[ $INSTALL_MODULES = "true" ]]; then
+			echo "FORCE INSTALLING NODE MODULES"
+			npm install
+		fi
+	else
+		echo "NODE MODULES DONT EXIST. INSTALLING NODE MODULES"
+		npm install
+	fi
+
+	if [[ $ = "true" ]]; then
+		echo "FORCE RESETTING SEQUELIZE DATABASE AND RUNNING SERVER"
+		node server.js
+	else
+		echo "RUNNING SERVER"
+		node server.js
+	fi
 fi
+
+
