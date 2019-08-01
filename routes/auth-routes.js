@@ -19,7 +19,7 @@ router.post('/login', Passport.authenticate('login', { session: false }), async 
     if (error) return next(error)
     //We don't want to store the sensitive information such as the
     //user password in the token so we pick only the id
-    const body = { id: user.id, userType: req.body.userType};
+    const body = { id: user.id, userType: (req.body.userType || 'client')};
     //Sign the JWT token and populate the payload with the user email and id
     const token = JWT.sign({ user: body }, 'a8729721a1e3e23cb890767e9a56b958', { expiresIn: "14 days" });
     //Send back the token to the user
